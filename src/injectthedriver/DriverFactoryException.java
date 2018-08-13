@@ -7,4 +7,8 @@ public class DriverFactoryException extends Exception {
 		super(e);
 	}
 
+	public DriverFactoryException(String s) {
+		super(s);
+	}
+
 }

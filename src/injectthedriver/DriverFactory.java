@@ -28,8 +28,11 @@ public class DriverFactory {
 		return itf.getName().toUpperCase().replaceAll("[.]", "_");
 	}
 
-	static Map<String, Object> getProperties(Class<?> itf, Map<String, String> env) throws JsonException {
+	static Map<String, Object> getProperties(Class<?> itf, Map<String, String> env) throws JsonException, DriverFactoryException {
 		String s = env.get(envVarName(itf));
+		if(s == null) {
+			throw new DriverFactoryException("Environment variable " + envVarName(itf) + " missing");
+		}
 		return (Map<String, Object>) Jsoner.deserialize(s);
 	}
 
@@ -37,10 +40,24 @@ public class DriverFactory {
 		Map<String, Object> props;
 		try {
 			props = getProperties(itf, env);
-			ClassLoader cl = f.createClassLoader(new File((String)props.get("jar")).toURI().toURL());
+			if(!props.containsKey("jar")) {
+				throw new DriverFactoryException("Properties must contain a 'jar' attribute");				
+			}
+			if(!props.containsKey("class")) {
+				throw new DriverFactoryException("Properties must contain a 'class' attribute");				
+			}
+			String jarPath = (String)props.get("jar");
+			URL jarURL = new File(jarPath).toURI().toURL();
+			ClassLoader cl = f.createClassLoader(jarURL);
 			Class<?> cls = cl.loadClass((String)props.get("class"));
 			Constructor<?> ctor = cls.getConstructor(Map.class);
-			return ctor.newInstance(props);
+			ClassLoader pcl = Thread.currentThread().getContextClassLoader();
+			try {
+				Thread.currentThread().setContextClassLoader(cl);
+				return ctor.newInstance(props);				
+			} finally {
+				Thread.currentThread().setContextClassLoader(pcl);
+			}
 		} catch (JsonException | MalformedURLException | ClassNotFoundException | InstantiationException | IllegalAccessException | NoSuchMethodException | SecurityException | IllegalArgumentException | InvocationTargetException e) {
 			throw new DriverFactoryException(e);
 		}

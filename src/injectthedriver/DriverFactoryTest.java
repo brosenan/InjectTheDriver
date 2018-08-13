@@ -9,10 +9,12 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
@@ -37,7 +39,7 @@ class DriverFactoryTest {
 	}
 	
 	@Test
-	void testGetProperties() throws JsonException {
+	void testGetProperties() throws JsonException, DriverFactoryException {
 		Map<String, String> env = new HashMap<String, String>();
 		env.put("JAVA_IO_SERIALIZABLE", "{\"foo\": \"bar\", \"pi\": 3.14}");
 		Map<String, Object> r  = DriverFactory.getProperties(Serializable.class, env);
@@ -63,6 +65,14 @@ class DriverFactoryTest {
 		
 		assertThat(driver, instanceOf(MockClass.class));
 		assertEquals(((MockClass)driver).props, props);
+	}
+	
+	@Test
+	void integrationTest() throws IOException, DriverFactoryException {
+		String config  = "{\"jar\": \"aottest-0.1.0-SNAPSHOT-standalone.jar\", \"class\": \"aottest.Nat\"}";
+		Map<String, String> env = new HashMap<>();
+		env.put("JAVA_UTIL_ITERATOR", config);
+		Iterator<Integer> nat = (Iterator<Integer>)DriverFactory.createDriverFor(Iterator.class, env, new DriverFactory.ClassLoaderFactory());
 	}
 	
 }
