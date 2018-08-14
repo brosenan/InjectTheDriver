@@ -78,7 +78,7 @@ public interface QueueService {
 		 * @param data The task serialized as a byte array.
 		 * @throws IOException Something went wrong, and the task may have not been enqueued.
 		 */
-		void enqueue(Byte[] data) throws IOException;
+		void enqueue(byte[] data) throws IOException;
 		
 		/**
 		 * Start subscribing to tasks.
