@@ -2,6 +2,8 @@ package injectthedriver.interfaces;
 
 import java.io.IOException;
 
+import injectthedriver.interfaces.QueueService.Queue;
+
 public interface QueueService {
 	public class UnrecoverableError extends Exception {
 		private static final long serialVersionUID = 1L;
@@ -67,21 +69,31 @@ public interface QueueService {
 		 */
 		void stop();
 	}
-	/**
-	 * Places a task (serialized in some arbitrary format as a byte array) in the queue.
-	 * If successful, this guarantees that at one point handleTask() will be called 
-	 * for at least one subscriber.
-	 * @param data The task serialized as a byte array.
-	 * @throws IOException Something went wrong, and the task may have not been enqueued.
-	 */
-	void enqueue(Byte[] data) throws IOException;
+	
+	public interface Queue {
+		/**
+		 * Places a task (serialized in some arbitrary format as a byte array) in the queue.
+		 * If successful, this guarantees that at one point handleTask() will be called 
+		 * for at least one subscriber.
+		 * @param data The task serialized as a byte array.
+		 * @throws IOException Something went wrong, and the task may have not been enqueued.
+		 */
+		void enqueue(Byte[] data) throws IOException;
+		
+		/**
+		 * Start subscribing to tasks.
+		 * The given callback will be invoked with incoming tasks.
+		 * @param cb Will be called for tasks fetched from the queue.
+		 * @return A Stopable, allowing the subscription to be canceled.
+		 * @throws IOException Something went wrong. The callback will not be called.
+		 */
+		Stopable register(Callback cb) throws IOException;
+	}
 	
 	/**
-	 * Start subscribing to tasks.
-	 * The given callback will be invoked with incoming tasks.
-	 * @param cb Will be called for tasks fetched from the queue.
-	 * @return A Stopable, allowing the subscription to be canceled.
-	 * @throws IOException Something went wrong. The callback will not be called.
+	 * Defines a work queue, if it is not already defined.
+	 * @param name The name of the queue to define.
+	 * @return The defined queue.
 	 */
-	Stopable register(Callback cb) throws IOException;
+	Queue defineQueue(String name);
 }
