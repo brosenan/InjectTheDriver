@@ -2,49 +2,7 @@ package injectthedriver.interfaces;
 
 import java.io.IOException;
 
-import injectthedriver.interfaces.QueueService.Queue;
-
 public interface QueueService {
-	public class UnrecoverableError extends Exception {
-		private static final long serialVersionUID = 1L;
-
-		public UnrecoverableError() {
-			super();
-		}
-
-		public UnrecoverableError(String message, Throwable cause) {
-			super(message, cause);
-		}
-
-		public UnrecoverableError(String message) {
-			super(message);
-		}
-
-		public UnrecoverableError(Throwable cause) {
-			super(cause);
-		}
-
-	}
-	public class RecoverableError extends Exception {
-		private static final long serialVersionUID = 1L;
-
-		public RecoverableError() {
-			super();
-		}
-
-		public RecoverableError(String message, Throwable cause) {
-			super(message, cause);
-		}
-
-		public RecoverableError(String message) {
-			super(message);
-		}
-
-		public RecoverableError(Throwable cause) {
-			super(cause);
-		}
-
-	}
 	/**
 	 * A callback interface for receiving data from the queue
 	 */
@@ -59,17 +17,6 @@ public interface QueueService {
 		 */
 		void handleTask(byte[] data) throws RecoverableError, UnrecoverableError;
 	}
-	/**
-	 * An interface for allowing a service to be stopped.
-	 */
-	public interface Stopable {
-		/**
-		 * Stop the service. In case of the object returned from register(),
-		 * stops receiving tasks.
-		 */
-		void stop();
-	}
-	
 	public interface Queue {
 		/**
 		 * Places a task (serialized in some arbitrary format as a byte array) in the queue.
