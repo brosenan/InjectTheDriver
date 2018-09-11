@@ -2,27 +2,15 @@ package injectthedriver.interfaces;
 
 import java.io.IOException;
 
-import injectthedriver.interfaces.PubSubService.Callback;
+import injectthedriver.interfaces.QueueService.Callback;
 
 /**
- * A service implenting this interface provides publish/subscribe capabilities.
+ * A service implementing this interface provides publish/subscribe capabilities.
  * 
  * Publishing and subscribing are done on topics, which are identified as strings.
  * Topics do not need to be defined prior to usage.
  */
 public interface PubSubService {
-	public interface Callback {
-		/**
-		 * Handle a message, provided by a subscription.
-		 * 
-		 * @param topic The topic on which the message has been received.
-		 * @param message The message itself, as a byte array.
-		 * @throws RecoverableError In case there was an error processing the message, one that a retry (on the same subscriber) can solve.
-		 * @throws UnrecoverableError In case an of an error processing the message, one that is unlikely to be fixed when retried.
-		 */
-		void handleMessage(String topic, byte[] message) throws RecoverableError, UnrecoverableError;
-	}
-
 	/**
 	 * This method publishes a message on a topic.
 	 * It returns after the message has been successfully been published, 
