@@ -50,12 +50,12 @@ class DriverFactoryTest {
 	void testCreateDriverFor() throws MalformedURLException, DriverFactoryException, ClassNotFoundException, JsonException {
 		ClassLoaderFactory f = mock(ClassLoaderFactory.class);
 		ClassLoader cl = mock(ClassLoader.class);
-		URL jarUrl = new File("my.jar").toURI().toURL();
+		URL jarUrl = new URL("http://example.com/my.jar");
 		when(f.createClassLoader(jarUrl)).thenReturn(cl);
 		doReturn(MockClass.class).when(cl).loadClass("foo.Bar");
 		
 		Map<String, String> env = new HashMap<String, String>();
-		String json = "{\"jar\": \"my.jar\", \"class\": \"foo.Bar\", \"foo\": \"bar\"}";
+		String json = "{\"jar\": \"http://example.com/my.jar\", \"class\": \"foo.Bar\", \"foo\": \"bar\"}";
 		Map<String, Object> props = (Map<String, Object>) Jsoner.deserialize(json);
 		env.put("JAVA_IO_SERIALIZABLE", json);
 		Object driver = DriverFactory.createDriverFor(Serializable.class, env, f);
@@ -69,7 +69,7 @@ class DriverFactoryTest {
 	
 	@Test
 	void integrationTest() throws IOException, DriverFactoryException {
-		String config  = "{\"jar\": \"aottest-0.1.0-SNAPSHOT-standalone.jar\", \"class\": \"aottest.Nat\"}";
+		String config  = "{\"jar\": \"https://github.com/brosenan/InjectTheDriver/raw/master/aottest-0.1.0-SNAPSHOT-standalone.jar\", \"class\": \"aottest.Nat\"}";
 		Map<String, String> env = new HashMap<>();
 		env.put("JAVA_UTIL_ITERATOR", config);
 		Iterator<Integer> nat = (Iterator<Integer>)DriverFactory.createDriverFor(Iterator.class, env, new DriverFactory.ClassLoaderFactory());

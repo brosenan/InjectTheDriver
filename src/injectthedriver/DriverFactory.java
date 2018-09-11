@@ -47,7 +47,7 @@ public class DriverFactory {
 				throw new DriverFactoryException("Properties must contain a 'class' attribute");				
 			}
 			String jarPath = (String)props.get("jar");
-			URL jarURL = new File(jarPath).toURI().toURL();
+			URL jarURL = new URL(jarPath);
 			ClassLoader cl = f.createClassLoader(jarURL);
 			Class<?> cls = cl.loadClass((String)props.get("class"));
 			Constructor<?> ctor = cls.getConstructor(Map.class);
