@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>brosenan</groupId>
   <artifactId>injectthedriver</artifactId>
-  <version>0.0.4-SNAPSHOT</version>
+  <version>0.0.4</version>
   <name>InjectTheDriver</name>
   <description>A framework for injecting drivers into JVM-based microservices</description>
   <build>

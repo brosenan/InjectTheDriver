@@ -34,7 +34,7 @@ public interface QueueService {
 		 * @return A Stopable, allowing the subscription to be canceled.
 		 * @throws IOException Something went wrong. The callback will not be called.
 		 */
-		Stopable register(Callback cb) throws IOException;
+		Stoppable register(Callback cb) throws IOException;
 	}
 	
 	/**
